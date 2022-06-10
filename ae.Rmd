@@ -1,0 +1,142 @@
+---
+title: "Análise Exploratória de Vinhos Espanhóis"
+output:
+  html_document:
+    df_print: paged
+---
+
+|   Escolhemos a base de dados [Spanish Wine Quality Dataset](https://www.kaggle.com/datasets/fedesoriano/spanish-wine-quality-dataset). Além de ser um assunto interessante, a base possui variáveis de todos os tipos, possibilitando o uso de uma maior variedade de ferramentas analíticas.
+|
+|   Os dados foram importados para Excel para a limpeza. Os seguintes passos foram seguidos:
+<ul>
+<li>A coluna país foi removida por só haver um país.</li>
+<li>A coluna preço foi formatada.</li>
+<li>Foram removidos os dados sem informação de ano.</li>
+<li>Vinhos com valores superiores a 10 000 000 de euros foram desconsiderados.</li>
+<li>Vinhos sem tipo, corpo e acidez especificados foram desconsiderados.
+<li>A coluna rating foi formatada como número.</li>
+</ul>
+
+```{r}
+library(tidyverse)
+library(readr)
+
+vinho <- read_delim("Vinos de España.csv", 
+    delim = ";", escape_double = FALSE, trim_ws = TRUE)
+
+head(vinho)
+```
+
+|   Pesquisando sobre as regiões, descobrimos que há casos de municípios, de microrregiões de províncias e de denominações de origem protegida (indicação oficial da União Europeia que visa a certificar produtos de culinárias tradicionais). Por causa disso, a análise dos dados de região não poderá ser tão exata, ficando impossibilitada, por exemplo, a produção de mapas.
+
+|   Inicialmente, pensamos em tentar enteder que fatores estão relacionados com o preço e com a avaliação do vinho, ou seja, o que faz um vinho ser caro e o que o faz ser bem-avaliado.
+
+# Análises unidimensionais
+
+```{r}
+summary(vinho)
+sd(vinho$Year)
+sd(vinho$Rating)
+sd(vinho$Num_reviews)
+sd(vinho$Price)
+sd(vinho$Body)
+sd(vinho$Acidity)
+
+z <- ggplot(vinho, aes(x = Year))
+z + geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=2) +
+  theme_bw() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+y <- ggplot(vinho, aes(x = Rating))
+y + geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=2) +
+  theme_bw() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+x <- ggplot(vinho, aes(x = Num_reviews))
+x + geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=2) +
+  theme_bw() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+w <- ggplot(vinho, aes(x = Price))
+w + geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=2) +
+  theme_bw() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+v <- ggplot(vinho, aes(x = Body))
+v + geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=2) +
+  theme_bw() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+u <- ggplot(vinho, aes(x = Acidity))
+u + geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=2) +
+  theme_bw() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+t <- ggplot(vinho, aes(x = Year))
+t + geom_histogram() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+s <- ggplot(vinho, aes(x = Rating))
+s + geom_histogram() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+r <- ggplot(vinho, aes(x = Num_reviews))
+r + geom_histogram() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+q <- ggplot(vinho, aes(x = Price))
+q + geom_histogram() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+p <- ggplot(vinho, aes(x = Body))
+p + geom_histogram() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+o <- ggplot(vinho, aes(x = Acidity))
+o + geom_histogram() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+
+```
+
+# Algumas análises preliminares
+
+```{r}
+n <- ggplot(vinho, aes(y = Type)) +
+  geom_bar() + facet_wrap(~Rating)
+n
+
+
+
+m <- ggplot(vinho, aes(x = Rating, y = Type)) +
+  geom_count()
+m
+
+l <- ggplot(vinho, aes(x = Price, y = Rating)) +
+  geom_point() + facet_wrap(~Type)
+l
+
+k <- ggplot(vinho, aes(x = Price, y = Type, color = Rating)) +
+  geom_count()
+k
+
+j <- ggplot(vinho, aes(y = Price, x = Acidity))
+j + geom_jitter()
+
+h <- ggplot(vinho, aes(y = Price, x = Body))
+h + geom_jitter()
+
+g <- ggplot(vinho, aes(y = Price, x = Type, color = Rating))
+g + geom_jitter() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+f <- ggplot(vinho, aes(y = Price, x = Year, color = Rating))
+f + geom_point()
+
+```
+
