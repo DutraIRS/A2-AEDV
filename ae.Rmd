@@ -4,6 +4,7 @@ output:
   html_document:
     df_print: paged
 ---
+# Iago Dutra e Rodrigo Kalil
 
 |   Escolhemos a base de dados [Spanish Wine Quality Dataset](https://www.kaggle.com/datasets/fedesoriano/spanish-wine-quality-dataset). Além de ser um assunto interessante, a base possui variáveis de todos os tipos, possibilitando o uso de uma maior variedade de ferramentas analíticas.
 | 
@@ -143,6 +144,8 @@ o + geom_histogram() +
 
 # Análises bidimensionais
 
+Focou-se na relação entre preço, avaliação e outras variáveis.
+
 ```{r}
 k <- ggplot(vinhos, aes(x = Price, y = Winery, color = Rating)) +
   geom_count()
@@ -223,6 +226,8 @@ k
 
 # Algumas análises preliminares
 
+Explorando a base de dados de maneira mais livre.
+
 ```{r}
 n <- ggplot(vinhos, aes(y = Type)) +
   geom_bar() + facet_wrap(~Rating)
@@ -272,28 +277,28 @@ d + geom_jitter() + ylim(0,100)
 
 #Exploração focada nas variáveis preço e classificação.
 
-Esse primeiro gráfico, a seguir, fiz pra explorar as variáveis que mais me chamam a atenção, por serem uma manifestação em preço e nota da qualidade final do vinho. Coloquei preço no eixo x classificação no y. Também experimentei atribuir cor à variável tipode vinho, para observar as alterações nos eixos de acordo com os tipos. Com jitter, impeço que pontos de coordenadas iguais se sobreponham totalmente, para que eu tenha noção de densidade dos pontos.
+Esse primeiro gráfico, a seguir, fizemos pra explorar as variáveis que mais me chamam a atenção, por serem uma manifestação em preço e nota da qualidade final do vinho. Colocamos preço no eixo x classificação no y. Também experimentamos atribuir cor à variável tipode vinho, para observar as alterações nos eixos de acordo com os tipos. Com jitter, impedimos que pontos de coordenadas iguais se sobreponham totalmente, para que tenhamos noção de densidade dos pontos.
 
 ```{r}
 p <- ggplot(data = vinhos, mapping = aes(x = Price, y = Rating, color = Type))
 p + geom_jitter()
 ```
 
-O gráfico anterior ficou de difícil visualização, porque a variável tipo de vinho possui muitos valores que se confundem no aspecto cor. Por isso, resolvi retirar essa variável por enquanto.
+O gráfico anterior ficou de difícil visualização, porque a variável tipo de vinho possui muitos valores que se confundem no aspecto cor. Por isso, resolvemos retirar essa variável por enquanto.
 
 ```{r}
 p <- ggplot(data = vinhos, mapping = aes(x = Price, y = Rating))
 p + geom_jitter()
 ```
 
-É mais fácil visualizar principalmente por não ter a legenda ocupando espaço. Mas e incomoda a escala do eixo x, pois ficam muitos pontos sobrepostos no começo do eixo, e outros muito espaçados no final. Para ajeitar isso, inseri uma mudança para escala logarítmica de base 10.
+É mais fácil visualizar principalmente por não ter a legenda ocupando espaço. Mas incomoda a escala do eixo x, pois ficam muitos pontos sobrepostos no começo do eixo, e outros muito espaçados no final. Para ajeitar isso, inserimos uma mudança para escala logarítmica de base 10.
 
 ```{r}
 p <- ggplot(data = vinhos, mapping = aes(x = Price, y = Rating))
 p + geom_jitter() + scale_x_log10()
 ```
 
-Adicionando o parâmetro alpha eu torno os pontos meio transparentes. Assim, a sobreposição de pontos é destacada, e posso ver onde há mais ocorrências.
+Adicionando o parâmetro alpha tornamos os pontos meio transparentes. Assim, a sobreposição de pontos é destacada, e podemos ver onde há mais ocorrências.
 
 ```{r}
 p + geom_jitter(alpha = .2) + scale_x_log10()
@@ -301,23 +306,23 @@ p + geom_jitter(alpha = .2) + scale_x_log10()
 
 #Adicionando corpo e acidez.
 
-Armazenei o gráfico que eu tinha produzido até então na variável p, e inseri um facetamento em relação à acidez e ao corpo do vinho. Não gostei de como os gráficos ficaram distribuídos, pois ficou difícil de indentificar qual diz o que. Mas, ao invés de continnuar manipulando o facet_wrap, pensei em relacionar essas variáveis a cor e forma, pois elas tem poucos valores, podendo se encaixar bem nesses parâmetros.
+Armazenamos o gráfico que tínhamos produzido até então na variável p, e inserimos um facetamento em relação à acidez e ao corpo do vinho. Não gostamos de como os gráficos ficaram distribuídos, pois ficou difícil de indentificar qual diz o que. Mas, ao invés de continnuar manipulando o facet_wrap, pensamos em relacionar essas variáveis a cor e forma, pois elas tem poucos valores, podendo se encaixar bem nesses parâmetros.
 
 ```{r}
 p <- p + geom_jitter(alpha = .2) + scale_x_log10()
 p + facet_wrap(Body ~ Acidity)
 ```
 
-Fiz essa relação e até ficou bom, mas como corpo é uma variável contíonua, o ggplot a relaciona a diversos tons da mesma cor. Para diferenciar melhor os valores, eu quero que cada um se relacione a uma cor diferente.
+Fizemos essa relação e até ficou bom, mas como corpo é uma variável contíonua, o ggplot a relaciona a diversos tons da mesma cor. Para diferenciar melhor os valores, queremos que cada um se relacione a uma cor diferente.
 
 ```{r}
 a <- ggplot(data = vinhos, mapping = aes(x = Price, y = Rating, color = Body, size = Acidity))
 a + geom_jitter(alpha = .2) + scale_x_log10()
 ```
 
-Abaixo eu importei uma biblioteca que me permite relacionar uma paleta de cores a uma variável e tornei corpo uma variável não contínua para evitar confusão na visualização.
+Abaixo importamos uma biblioteca que permite relacionar uma paleta de cores a uma variável e tornamos corpo uma variável não contínua para evitar confusão na visualização.
 
-Criei um gráfico adicionando colScale, e obtive um gráfico que cumpria o meu desejo em relação à variável corpo. Mas a transparência estava muito alta e diferenciava pouco as cores entre si. Por isso, refiz o fráfico aumantando um pouco o parâmetro alpha. Ficou bem legal. É possível perceber uma predominância de roxo no quadrante superior direito do gráfico. Na parte inferior esquerda, o verde e o azul dominam. O verde e o roxo se estendem por toda a nuvem de ocorrências, enquanto o azul se detém à parte inferior. O vermelho aparece poucas vezes, em geral no centro.
+Criamos um gráfico adicionando colScale, e obtivemos um gráfico que cumpria o nosso desejo em relação à variável corpo. Mas a transparência estava muito alta e diferenciava pouco as cores entre si. Por isso, refizemos o gráfico aumantando um pouco o parâmetro alpha. Ficou bem legal. É possível perceber uma predominância de roxo no quadrante superior direito do gráfico. Na parte inferior esquerda, o verde e o azul dominam. O verde e o roxo se estendem por toda a nuvem de ocorrências, enquanto o azul se detém à parte inferior. O vermelho aparece poucas vezes, em geral no centro.
 
 ```{r}
 library(RColorBrewer)
@@ -335,13 +340,13 @@ b <- ggplot(data = vinhos, mapping = aes(x = Price, y = Rating, color = Body, si
 b + geom_jitter(alpha = .5) + scale_x_log10() + colScale
 ```
 
-Achei o comando que organiza o facetamento do modo que eu desejava e o usei nas geoms de antes. Dá para perceber uma padrão na nuvem de ocorrências, aparentemente independente da relação com corpo e acidez.
+Achamos o comando que organiza o facetamento do modo que desejávamos e o usamos nas geoms de antes. Dá para perceber uma padrão na nuvem de ocorrências, aparentemente independente da relação com corpo e acidez.
 
 ```{r}
 p + facet_grid(Body ~ Acidity)
 ```
 
-Voltando ao gráfico com cores, preparei a variável acidez para caber no parâmetro forma e escolhi manualmente três formatos adequados aos seus valores. Depois eu modifiquei as formas para destacar a cor de cada ponto.
+Voltando ao gráfico com cores, preparamos a variável acidez para caber no parâmetro forma e escolhemos manualmente três formatos adequados aos seus valores. Depois modificamos as formas para destacar a cor de cada ponto.
 
 ```{r}
 vinhos <- vinhos %>%
@@ -356,7 +361,7 @@ c + geom_jitter(alpha = .5, aes(shape = Acidity, size = 3)) + scale_x_log10() + 
 
 
 ```
-Aqui eu chamei minha base de dados para ver como ela ficou após minhas alterações usando pipe. Tá tranquila.
+Aqui chamamos nossa base de dados para ver como ela ficou após as alterações usando pipe. Tudo Certo.
 ```{r}
 head(vinhos)
 
@@ -365,7 +370,7 @@ head(vinhos)
 #Comparando ano da safra com classificação.
 
 Dizem que a idade do vinho afeta sua qualidade. Cruzando ano com classificação e facetando por tipo, podemos ver a relação entre essas variáveis para cada tipo de vinho.
-Dá pra ter uma noção do que acontece, mas criando um gráfico para cada tipo, poderemos ver melhor como as variáveis se comportam.
+Dá para ter uma noção do que acontece, mas criando um gráfico para cada tipo, poderemos ver melhor como as variáveis se comportam.
 ```{r}
 
 d <- ggplot(data = vinhos, mapping = aes(x = Year, y = Rating))
@@ -477,11 +482,11 @@ vinhos_verdejo <- vinhos %>%
 d <- ggplot(data = vinhos_verdejo, mapping = aes(x = Year, y = Rating))
 d + geom_jitter() + xlim(1900, 2025) + ylim(4,5) + labs(title = "Verdejo")
 ```
-Bom, dá pra ver que a maioria dos vinhos é recente, e quando temos um vinho mais velho, ele costuma ser minimamente bem classificado. Mas entre os vinhos novos, há diversas classificações.
+Bom, é possível notar que a maioria dos vinhos é recente, e quando temos um vinho mais velho, ele costuma ser minimamente bem classificado. Mas entre os vinhos novos, há diversas classificações.
 
 #Comparando preço e classificação de cada tipo de vinho.
 
-Essa sequência de gráficos pode ser útil para relacionar outras variáveis. A seguir, plotamos um facetamento por tipo e um gráfico de cada tipo. Nos gráficos cruzamos preço com classificação e adicionamos a variável número de avaliações na cor e no tamanho (pra ter destaque).
+Essa sequência de gráficos pode ser útil para relacionar outras variáveis. A seguir, plotamos um facetamento por tipo e um gráfico de cada tipo. Nos gráficos cruzamos preço com classificação e adicionamos a variável número de avaliações na cor e no tamanho (para ter destaque).
 ```{r}
 d <- ggplot(data = vinhos, mapping = aes(x = Price, y = Rating, color = Num_reviews, size = Num_reviews))
 d + geom_jitter() + facet_wrap(~Type)
@@ -597,5 +602,4 @@ No geral, entre os preços baixos há vinhos bons e ruins. Quanto mais o preço 
 
 # Conclusões
 
-Ser velho não significa ser bom. Ser caro também não significa ser bom. A partir de mil euros, o preço para de influenciar na qualidade. Os bem classificados possuem muito corpo e acidez, mas possuir muito corpo e acidez não define sua classificação. Com excessão do Sparkling, do Sherry, Sauvignon Blanc, Pedro Ximenez e Montsant Red, todos os tipos de uva podem produzir vinhos ruins. Mas apenas Toro Red e Tempranillo produzem os que tiveram melhor avaliação. Dentre os melhores, o mais barato é o Vina El Pison 2018, de uva Tempranillo, e que custa 313,50 euros; De acordo com o site vivino, ele é vinho top 1% do mundo. Seu corpo é quatro, e sua acidez é dois. O melhor abaixo de cem euros é o Regina Vides Ribera del Duero 1998, e sua avaliação é 4.7. Dentre os melhores vinhos, o Don PX Convento Seleccion 1946 é o primeiro com um grande número de avaliações (398).
-
+Ser velho não significa ser bom. Ser caro também não significa ser bom. A partir de mil euros, o preço para de influenciar na qualidade. Os bem classificados possuem muito corpo e acidez, mas possuir muito corpo e acidez não garante que será bem-classificado. Com excessão dos tipos Sparkling, Sherry, Sauvignon Blanc, Pedro Ximenez e Montsant Red, todos os tipos de uva podem produzir vinhos ruins. Mas apenas Toro Red e Tempranillo produzem os que tiveram melhor avaliação. Dentre os melhores, o mais barato é o Vina El Pison 2018, de uva Tempranillo, e que custa 313,50 euros; De acordo com o site Vivino, ele está no top 1% do mundo. Seu corpo é quatro, e sua acidez é dois. O melhor abaixo de cem euros é o Regina Vides Ribera del Duero 1998, e sua avaliação é 4.7. Dentre os melhores vinhos, o Don PX Convento Seleccion 1946 é o primeiro com um grande número de avaliações (398).
