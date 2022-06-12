@@ -48,6 +48,8 @@ A coluna rating foi formatada como número.
 
 </ul>
 
+Foram encontradas várias duplicatas na base de dados, sendo necessário o comando distinct(), que desconsidera as linhas duplicadas.
+
 ```{r}
 library(tidyverse)
 library(readr)
@@ -57,7 +59,6 @@ vinhos <- read_delim("vinhos.csv",
 view(vinhos)
 unique(vinhos$Region)
 
-# Desconsidera as linhas duplicadas.
 vinhos <- distinct(vinhos)
 view(vinhos)
 head(vinhos)
